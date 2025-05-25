@@ -2,6 +2,7 @@ package scot.oskar.securedoc.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -14,7 +15,7 @@ public class GlobalExceptionHandler {
     return this.buildResponse(error);
   }
 
-  protected ResponseEntity<Object> buildResponse(ApiError apiError) {
+  protected ResponseEntity<Object> buildResponse(@NonNull ApiError apiError) {
     return ResponseEntity
         .status(apiError.getStatus())
         .body(apiError);
