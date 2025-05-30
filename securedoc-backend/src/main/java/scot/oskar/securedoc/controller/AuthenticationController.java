@@ -70,4 +70,16 @@ public class AuthenticationController {
     return ResponseEntity.ok(response);
   }
 
+  @PostMapping("/logout")
+  public ResponseEntity<?> logout(@RequestBody @Valid RefreshTokenDTO dto) {
+    service.logoutUser(dto);
+
+    final ApiResponse response = ApiResponse.builder()
+        .success(true)
+        .message("User logged out.")
+        .build();
+
+    return ResponseEntity.ok(response);
+  }
+
 }

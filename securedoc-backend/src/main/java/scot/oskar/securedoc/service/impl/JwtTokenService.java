@@ -31,8 +31,8 @@ public class JwtTokenService implements IJwtTokenService {
   private final SecretKey secretKey;
   private final UserRepository userRepository;
   private final RefreshTokenRepository tokenRepository;
-  private final long accessExpiration;  // For access tokens
-  private final long refreshExpiration; // For refresh tokens
+  private final long accessExpiration;
+  private final long refreshExpiration;
 
   public JwtTokenService(
       @Value("${app.jwtSecret}") String secret,

@@ -13,4 +13,6 @@ public interface IAuthenticationService {
   TokenResponseDTO authenticateUser(UserLoginDTO userLogin);
 
   TokenResponseDTO refreshToken(RefreshTokenDTO dto);
+
+  void logoutUser(RefreshTokenDTO dto);
 }

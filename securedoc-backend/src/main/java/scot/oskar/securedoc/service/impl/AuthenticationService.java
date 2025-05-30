@@ -93,4 +93,11 @@ public class AuthenticationService implements IAuthenticationService {
               .build();
         }).orElseThrow(() -> new ResourceNotFoundException("Token", "id", dto.getToken()));
   }
+
+  @Override
+  public void logoutUser(RefreshTokenDTO dto) {
+    final RefreshToken refreshToken = tokenService.findByToken(dto.getToken())
+        .orElseThrow(() -> new ResourceNotFoundException("Token", "id", dto.getToken()));
+    tokenService.deactivateToken(refreshToken);
+  }
 }
