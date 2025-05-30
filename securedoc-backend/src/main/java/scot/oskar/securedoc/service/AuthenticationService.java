@@ -6,7 +6,7 @@ import scot.oskar.securedoc.data.dto.user.UserLoginDTO;
 import scot.oskar.securedoc.data.dto.user.UserSignupDTO;
 import scot.oskar.securedoc.data.model.User;
 
-public interface IAuthenticationService {
+public interface AuthenticationService {
 
   User createUser(UserSignupDTO userSignup);
 

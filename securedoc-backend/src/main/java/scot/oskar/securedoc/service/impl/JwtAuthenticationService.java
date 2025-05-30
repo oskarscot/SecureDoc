@@ -17,17 +17,17 @@ import scot.oskar.securedoc.exception.ResourceNotFoundException;
 import scot.oskar.securedoc.exception.UserAlreadyExistsException;
 import scot.oskar.securedoc.repository.UserRepository;
 import scot.oskar.securedoc.security.UserPrincipal;
-import scot.oskar.securedoc.service.IAuthenticationService;
+import scot.oskar.securedoc.service.AuthenticationService;
 
 @Service
-public class AuthenticationService implements IAuthenticationService {
+public class JwtAuthenticationService implements AuthenticationService {
 
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
   private final AuthenticationManager authenticationManager;
   private final JwtTokenService tokenService;
 
-  public AuthenticationService(UserRepository userRepository, PasswordEncoder passwordEncoder,
+  public JwtAuthenticationService(UserRepository userRepository, PasswordEncoder passwordEncoder,
       AuthenticationManager authenticationManager, JwtTokenService tokenService) {
     this.userRepository = userRepository;
     this.passwordEncoder = passwordEncoder;
@@ -69,7 +69,7 @@ public class AuthenticationService implements IAuthenticationService {
     final User user = userRepository.findById(principal.getId())
         .orElseThrow(() -> new ResourceNotFoundException("User", "id", principal.getId()));
 
-    //generate access and refresh tokens
+    // generate access and refresh tokens
     final String jwtToken = tokenService.generateAccessToken(user.getId());
     tokenService.findByUser(user).ifPresent(tokenService::deactivateToken);
     final RefreshToken refreshToken = tokenService.generateRefreshToken(user.getId());

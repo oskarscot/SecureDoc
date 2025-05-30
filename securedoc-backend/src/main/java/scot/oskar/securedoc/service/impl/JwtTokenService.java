@@ -2,29 +2,26 @@ package scot.oskar.securedoc.service.impl;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.security.SignatureException;
 import java.time.Instant;
 import java.util.Optional;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.UUID;
+import org.springframework.stereotype.Service;
 import scot.oskar.securedoc.data.model.RefreshToken;
 import scot.oskar.securedoc.data.model.User;
 import scot.oskar.securedoc.exception.AuthenticationExpiredException;
 import scot.oskar.securedoc.repository.RefreshTokenRepository;
 import scot.oskar.securedoc.repository.UserRepository;
-import scot.oskar.securedoc.service.IJwtTokenService;
 
 @Getter
-@Component
-public class JwtTokenService implements IJwtTokenService {
+@Service
+public class JwtTokenService {
 
   private static final Logger logger = LoggerFactory.getLogger(JwtTokenService.class);
 
@@ -48,7 +45,6 @@ public class JwtTokenService implements IJwtTokenService {
     this.refreshExpiration = refreshExpiration;
   }
 
-  @Override
   public String generateAccessToken(UUID principalId) {
     final Date now = new Date();
     final Date expiration = new Date(now.getTime() + this.accessExpiration);
@@ -67,7 +63,6 @@ public class JwtTokenService implements IJwtTokenService {
         .compact();
   }
 
-  @Override
   public RefreshToken generateRefreshToken(UUID principalId) {
     final Date now = new Date();
     final Date expiration = new Date(now.getTime() + this.refreshExpiration);
@@ -121,23 +116,11 @@ public class JwtTokenService implements IJwtTokenService {
     return UUID.fromString(payload.getSubject());
   }
 
-  //TODO this is ugly, clean it up
-  @Override
   public boolean validateToken(String authToken) {
     try {
       Jwts.parser().verifyWith(this.secretKey).build().parseSignedClaims(authToken);
       return true;
-    } catch (SignatureException ex) {
-      logger.error("Invalid JWT signature");
-    } catch (MalformedJwtException ex) {
-      logger.error("Invalid JWT token");
-    } catch (ExpiredJwtException ex) {
-      logger.error("Expired JWT token");
-    } catch (UnsupportedJwtException ex) {
-      logger.error("Unsupported JWT token");
-    } catch (IllegalArgumentException ex) {
-      logger.error("JWT claims string is empty");
-    }
+    } catch (Exception ignored) { }
     return false;
   }
 }

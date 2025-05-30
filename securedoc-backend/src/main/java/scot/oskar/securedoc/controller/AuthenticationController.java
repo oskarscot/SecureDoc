@@ -15,7 +15,7 @@ import scot.oskar.securedoc.data.dto.user.UserLoginDTO;
 import scot.oskar.securedoc.data.dto.user.UserResponseDTO;
 import scot.oskar.securedoc.data.dto.user.UserSignupDTO;
 import scot.oskar.securedoc.data.model.User;
-import scot.oskar.securedoc.service.impl.AuthenticationService;
+import scot.oskar.securedoc.service.AuthenticationService;
 
 @RestController
 @RequestMapping("api/v1/auth")
@@ -57,7 +57,7 @@ public class AuthenticationController {
     return ResponseEntity.ok(response);
   }
 
-  @PostMapping("/token/refresh")
+  @PostMapping("/refresh")
   public ResponseEntity<?> refreshToken(@RequestBody @Valid RefreshTokenDTO dto) {
     final TokenResponseDTO token = service.refreshToken(dto);
 
