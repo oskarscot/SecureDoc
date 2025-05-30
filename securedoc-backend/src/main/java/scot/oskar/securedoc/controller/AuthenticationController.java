@@ -9,11 +9,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import scot.oskar.securedoc.data.ApiResponse;
+import scot.oskar.securedoc.data.dto.UserLoginDTO;
+import scot.oskar.securedoc.data.dto.UserResponseDTO;
 import scot.oskar.securedoc.data.dto.UserSignupDTO;
 import scot.oskar.securedoc.data.model.User;
 import scot.oskar.securedoc.service.impl.AuthenticationService;
 
-@RestController()
+@RestController
 @RequestMapping("api/v1/auth")
 public class AuthenticationController {
 
@@ -33,11 +35,24 @@ public class AuthenticationController {
 
     final ApiResponse response = ApiResponse.builder()
         .success(true)
-        .message("User created sucessfully")
-        .resource(user)
+        .message("User created successfully")
+        .resource(UserResponseDTO.fromUser(user))
         .build();
 
     return ResponseEntity.created(createdUri).body(response);
+  }
+
+  @PostMapping("/login")
+  public ResponseEntity<?> login(@RequestBody @Valid UserLoginDTO dto) {
+    final User user = service.authenticateUser(dto);
+
+    final ApiResponse response = ApiResponse.builder()
+        .success(true)
+        .message("Logged in successfully")
+        .resource(UserResponseDTO.fromUser(user))
+        .build();
+
+    return ResponseEntity.ok(response);
   }
 
 }

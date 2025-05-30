@@ -30,11 +30,9 @@ import scot.oskar.securedoc.security.JwtAuthenticationFilter;
 public class SecurityConfig {
 
   private final JwtAuthenticationFilter authenticationFilter;
-  private final JwtAuthenticationEntryPoint authenticationEntryPoint;
 
-  public SecurityConfig(JwtAuthenticationFilter authenticationFilter, JwtAuthenticationEntryPoint authenticationEntryPoint) {
+  public SecurityConfig(JwtAuthenticationFilter authenticationFilter) {
     this.authenticationFilter = authenticationFilter;
-    this.authenticationEntryPoint = authenticationEntryPoint;
   }
 
   @Bean
@@ -51,7 +49,6 @@ public class SecurityConfig {
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http.csrf(AbstractHttpConfigurer::disable)
         .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-        .exceptionHandling(exceptionHandling -> exceptionHandling.authenticationEntryPoint(this.authenticationEntryPoint))
         .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(request ->
             request.requestMatchers("/api/v1/auth/**").permitAll()

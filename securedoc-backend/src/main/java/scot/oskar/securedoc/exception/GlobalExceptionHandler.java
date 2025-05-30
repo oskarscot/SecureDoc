@@ -3,6 +3,7 @@ package scot.oskar.securedoc.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -25,6 +26,13 @@ public class GlobalExceptionHandler {
         // Turns the error into a string of "field: message"
         .map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage())
         .forEach(error::addError);
+
+    return this.buildResponse(error);
+  }
+
+  @ExceptionHandler(AuthenticationException.class)
+  protected ResponseEntity<Object> authenticationHandler(AuthenticationException ex) {
+    final ApiError error = new ApiError(HttpStatus.UNAUTHORIZED, ex.getMessage());
 
     return this.buildResponse(error);
   }
