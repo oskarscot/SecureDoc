@@ -1,4 +1,4 @@
-package scot.oskar.securedoc.data.dto;
+package scot.oskar.securedoc.data.dto.user;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

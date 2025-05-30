@@ -1,4 +1,4 @@
-package scot.oskar.securedoc.data.dto;
+package scot.oskar.securedoc.data.dto.user;
 
 import java.time.LocalDateTime;
 import java.util.UUID;

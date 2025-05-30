@@ -18,12 +18,8 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
-import scot.oskar.securedoc.security.JwtAuthenticationEntryPoint;
 import scot.oskar.securedoc.security.JwtAuthenticationFilter;
 
-/**
- * Web Security configuration responsible for securing routes, password encryption policies.
- */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity

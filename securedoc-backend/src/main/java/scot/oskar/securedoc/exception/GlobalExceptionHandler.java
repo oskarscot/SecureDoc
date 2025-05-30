@@ -33,7 +33,12 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(AuthenticationException.class)
   protected ResponseEntity<Object> authenticationHandler(AuthenticationException ex) {
     final ApiError error = new ApiError(HttpStatus.UNAUTHORIZED, ex.getMessage());
+    return this.buildResponse(error);
+  }
 
+  @ExceptionHandler(AuthenticationExpiredException.class)
+  protected ResponseEntity<Object> authenticationExpiredHandler(AuthenticationExpiredException ex) {
+    final ApiError error = new ApiError(HttpStatus.UNAUTHORIZED, ex.getMessage());
     return this.buildResponse(error);
   }
 

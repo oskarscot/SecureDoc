@@ -15,14 +15,15 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.UUID;
+import scot.oskar.securedoc.service.impl.JwtTokenService;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-  private final JwtTokenProvider tokenProvider;
+  private final JwtTokenService tokenProvider;
   private final UserDetailsServiceImpl userDetailsService;
 
-  public JwtAuthenticationFilter(JwtTokenProvider tokenProvider, UserDetailsServiceImpl userDetailsService) {
+  public JwtAuthenticationFilter(JwtTokenService tokenProvider, UserDetailsServiceImpl userDetailsService) {
     this.tokenProvider = tokenProvider;
     this.userDetailsService = userDetailsService;
   }
@@ -40,9 +41,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         UserDetails userDetails = userDetailsService.loadUserById(userId);
 
-        // Create authentication token with user details and authorities (roles)
+        // Create authentication token with user details
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-            userDetails, null, userDetails.getAuthorities());
+            userDetails, null, userDetails.getAuthorities()); // authorities are null as we do not use them
 
         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
