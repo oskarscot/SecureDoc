@@ -29,7 +29,7 @@ public class File {
 
   @JdbcTypeCode(SqlTypes.JSON)
   @Column(columnDefinition = "jsonb")
-  private FileMetadata metadata;
+  private FileMetadata metadata; // maybe store metadata directly in s3
 
   @ManyToOne
   @JoinColumn(name = "collections_id", nullable = true)
