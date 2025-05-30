@@ -63,7 +63,7 @@ public class AuthenticationController {
 
     final ApiResponse response = ApiResponse.builder()
         .success(true)
-        .message("New access credentials issued correctly")
+        .message("Token validated")
         .resource(token)
         .build();
 

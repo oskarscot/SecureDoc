@@ -35,7 +35,6 @@ public class AuthenticationService implements IAuthenticationService {
     this.tokenService = tokenService;
   }
 
-
   @Override
   @Transactional
   public User createUser(UserSignupDTO userSignup) {
@@ -58,11 +57,6 @@ public class AuthenticationService implements IAuthenticationService {
   @Override
   @Transactional
   public TokenResponseDTO authenticateUser(UserLoginDTO userLogin) {
-    if(!userRepository.existsByEmail(userLogin.getEmail())) {
-      throw new ResourceNotFoundException("User", "email", userLogin.getEmail());
-    }
-
-    // authenticate
     final Authentication authentication = authenticationManager.authenticate(
         new UsernamePasswordAuthenticationToken(
             userLogin.getEmail(),
@@ -77,12 +71,12 @@ public class AuthenticationService implements IAuthenticationService {
 
     //generate access and refresh tokens
     final String jwtToken = tokenService.generateAccessToken(user.getId());
+    tokenService.findByUser(user).ifPresent(tokenService::deactivateToken);
     final RefreshToken refreshToken = tokenService.generateRefreshToken(user.getId());
 
-    final TokenResponseDTO response = TokenResponseDTO.builder()
+    return TokenResponseDTO.builder()
         .accessToken(jwtToken)
         .refreshToken(refreshToken.getToken()).build();
-    return response;
   }
 
   @Override

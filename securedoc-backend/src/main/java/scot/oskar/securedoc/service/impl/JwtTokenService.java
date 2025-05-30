@@ -100,8 +100,16 @@ public class JwtTokenService implements IJwtTokenService {
     return token;
   }
 
+  public void deactivateToken(RefreshToken token) {
+    tokenRepository.delete(token);
+  }
+
   public Optional<RefreshToken> findByToken(String token) {
     return tokenRepository.findByToken(token);
+  }
+
+  public Optional<RefreshToken> findByUser(User user) {
+    return tokenRepository.findByUser(user);
   }
 
   public UUID getUserIdFromToken(final String token) {
