@@ -5,8 +5,7 @@ import io.jsonwebtoken.security.Keys;
 import java.time.Instant;
 import java.util.Optional;
 import lombok.Getter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
@@ -19,11 +18,10 @@ import scot.oskar.securedoc.exception.AuthenticationExpiredException;
 import scot.oskar.securedoc.repository.RefreshTokenRepository;
 import scot.oskar.securedoc.repository.UserRepository;
 
+@Slf4j
 @Getter
 @Service
 public class JwtTokenService {
-
-  private static final Logger logger = LoggerFactory.getLogger(JwtTokenService.class);
 
   private final SecretKey secretKey;
   private final UserRepository userRepository;
@@ -32,11 +30,11 @@ public class JwtTokenService {
   private final long refreshExpiration;
 
   public JwtTokenService(
-      @Value("${app.jwtSecret}") String secret,
+      @Value("${app.jwt-secret}") String secret,
       UserRepository userRepository,
       RefreshTokenRepository tokenRepository,
-      @Value("${app.jwtAccessExpirationMs:900000}") long accessExpiration,  // Default: 15 minutes
-      @Value("${app.jwtRefreshExpirationMs:604800000}") long refreshExpiration  // Default: 7 days
+      @Value("${app.jwt-access-expiration:900000}") long accessExpiration,  // Default: 15 minutes
+      @Value("${app.jwt-refresh-expiration:604800000}") long refreshExpiration  // Default: 7 days
   ) {
     this.secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     this.userRepository = userRepository;
