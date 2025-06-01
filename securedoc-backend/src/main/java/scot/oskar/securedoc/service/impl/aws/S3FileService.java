@@ -31,9 +31,6 @@ public class S3FileService implements FileService {
   @Value("${app.aws.s3.bucket-name}")
   private String bucketName;
 
-  @Value("${app.aws.cloudfront.domain}")
-  private String cloudfrontDomain;
-
   public S3FileService(FileRepository fileRepository, UserRepository userRepository, S3Client s3Client) {
     this.fileRepository = fileRepository;
     this.userRepository = userRepository;
@@ -45,14 +42,14 @@ public class S3FileService implements FileService {
     final String originalFilename = file.getOriginalFilename();
     final String hashName = DigestUtils.md5DigestAsHex(originalFilename.getBytes());
     final String extension = getFileExtension(originalFilename);
-    final String key = String.format("%s/%s.%s", ownerId, hashName, extension);
+    final String key = String.format("%s/%s%s", ownerId, hashName, extension);
 
     final User user = userRepository.findById(ownerId)
         .orElseThrow(() -> new ResourceNotFoundException("User", "id", ownerId));
 
     final File dbFile = File.builder()
         .originalName(originalFilename)
-        .hashedName(hashName)
+        .hashedName(hashName + extension)
         .owner(user)
         .build();
 
@@ -79,7 +76,8 @@ public class S3FileService implements FileService {
   @Override
   public void deleteFile(UUID ownerId, UUID fileId) {
     final File file = fileRepository.findById(fileId).orElseThrow(() -> new ResourceNotFoundException("File", "id", fileId));
-    final String key = String.format("%s/%s.%s", ownerId, file.getHashedName(), getFileExtension(file.getHashedName()));
+    final String key = String.format("%s/%s", ownerId, file.getHashedName());
+    System.out.println(key);
 
     DeleteObjectRequest request = DeleteObjectRequest.builder()
         .bucket(bucketName)

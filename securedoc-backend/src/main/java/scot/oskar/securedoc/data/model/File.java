@@ -35,7 +35,7 @@ public class File {
   @JoinColumn(name = "collections_id", nullable = true)
   private Collection collection;
 
-  @OneToOne
+  @ManyToOne
   @JoinColumn(name = "users_id")
   private User owner;
 

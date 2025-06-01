@@ -1,14 +1,12 @@
 package scot.oskar.securedoc.controller;
 
 import java.net.URI;
+import java.util.List;
+import java.util.UUID;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import scot.oskar.securedoc.annotation.CurrentUser;
@@ -17,6 +15,7 @@ import scot.oskar.securedoc.data.dto.file.FileResponseDTO;
 import scot.oskar.securedoc.data.model.File;
 import scot.oskar.securedoc.data.model.User;
 import scot.oskar.securedoc.service.FileService;
+import software.amazon.awssdk.services.s3.endpoints.internal.Value;
 
 @RestController
 @RequestMapping("api/v1/files")
@@ -43,18 +42,35 @@ public class FileController {
     return ResponseEntity.created(uri).body(response);
   }
 
-  @PostMapping("/")
+  @GetMapping()
   public ResponseEntity<?> getAllFiles(@CurrentUser User user) {
-    return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
+    List<File> allFilesForUser = fileService.getAllFilesForUser(user.getId());
+    final ApiResponse response = ApiResponse.builder()
+        .success(true)
+        .message("Files retrieved successfully")
+        .resource(allFilesForUser.stream().map(FileResponseDTO::fromFile).toList())
+        .build();
+    return ResponseEntity.ok(response);
   }
 
   @PostMapping("/{id}")
-  public ResponseEntity<?> getFile(@PathVariable String id, @CurrentUser User user) {
-    return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
+  public ResponseEntity<?> getFile(@PathVariable UUID id, @CurrentUser User user) {
+    final File file = fileService.getFile(id);
+    final ApiResponse response = ApiResponse.builder()
+        .success(true)
+        .message("File retrieved successfully")
+        .resource(FileResponseDTO.fromFile(file))
+        .build();
+    return ResponseEntity.ok(response);
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<?> deleteFile(@PathVariable String id, @CurrentUser User user) {
-    return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
+  public ResponseEntity<?> deleteFile(@PathVariable UUID id, @CurrentUser User user) {
+    fileService.deleteFile(user.getId(), id);
+    final ApiResponse response = ApiResponse.builder()
+        .success(true)
+        .message("File deleted successfully")
+        .build();
+    return ResponseEntity.ok(response);
   }
 }
