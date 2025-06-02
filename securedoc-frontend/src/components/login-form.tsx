@@ -9,12 +9,46 @@ import {
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { NavLink } from 'react-router-dom'
+import {NavLink, useNavigate} from 'react-router-dom'
+import { useForm } from 'react-hook-form'
+import type { LoginSchemaType } from '../../types'
+import { loginSchema } from '@/lib/schemas.ts'
+import { zodResolver } from '@hookform/resolvers/zod'
+import authHandler from '@/api/auth-handler.ts'
+import {useMutation, useQueryClient} from "@tanstack/react-query";
+import {useCookies} from "react-cookie";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<'div'>) {
+  const queryClient = useQueryClient()
+  const navigate = useNavigate()
+  const [, setCookie] = useCookies(['auth']);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginSchemaType>({
+    resolver: zodResolver(loginSchema),
+  })
+  const mutation = useMutation({
+    mutationFn: (data: LoginSchemaType) => {
+      return authHandler.login(data)
+    },
+    onSuccess: (response) => {
+      setCookie('auth', JSON.stringify(response.resource), { path: '/' })
+      queryClient.invalidateQueries({ queryKey: ['auth'] })
+      navigate('/dashboard')
+    },
+    onError: (error: Error) => {
+      console.error('Login failed:', error.message)
+    },
+  })
+  const onSubmit = (data: LoginSchemaType) => {
+    mutation.mutate(data)
+  }
+
   return (
     <div className={cn('flex flex-col gap-6', className)} {...props}>
       <Card>
@@ -25,7 +59,7 @@ export function LoginForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <div className="grid gap-6">
               <div className="flex flex-col gap-4">
                 <Button variant="outline" className="w-full">
@@ -59,8 +93,11 @@ export function LoginForm({
                     id="email"
                     type="email"
                     placeholder="m@example.com"
-                    required
+                    {...register('email', { required: true })}
                   />
+                  {errors?.email?.message && (
+                      <p className="text-red-700 mb-4">{errors.email?.message}</p>
+                  )}
                 </div>
                 <div className="grid gap-3">
                   <div className="flex items-center">
@@ -72,7 +109,14 @@ export function LoginForm({
                       Forgot your password?
                     </a>
                   </div>
-                  <Input id="password" type="password" required />
+                  <Input
+                    id="password"
+                    type="password"
+                    {...register('password', { required: true })}
+                  />
+                  {errors?.password?.message && (
+                      <p className="text-red-700 mb-4">{errors.password?.message}</p>
+                  )}
                 </div>
                 <Button type="submit" className="w-full">
                   Login

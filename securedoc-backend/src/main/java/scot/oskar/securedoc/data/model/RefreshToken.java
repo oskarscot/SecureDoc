@@ -1,12 +1,7 @@
 package scot.oskar.securedoc.data.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
 import java.time.Instant;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -29,7 +24,8 @@ public class RefreshToken {
   private String token;
   private Instant expiry;
 
-  @OneToOne
+  // This has to be a ManyToOne relationship for edge cases where an existing token is not deleted before a new one is created.
+  @ManyToOne
   @JoinColumn(name = "users_id")
   private User user;
 

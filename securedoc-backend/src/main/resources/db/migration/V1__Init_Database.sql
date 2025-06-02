@@ -37,9 +37,6 @@ CREATE TABLE users
     CONSTRAINT pk_users PRIMARY KEY (id)
 );
 
-ALTER TABLE refresh_tokens
-    ADD CONSTRAINT uc_refresh_tokens_users UNIQUE (users_id);
-
 ALTER TABLE files
     ADD CONSTRAINT FK_FILES_ON_COLLECTIONS FOREIGN KEY (collections_id) REFERENCES collections (id);
 
