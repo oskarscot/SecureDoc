@@ -1,8 +1,13 @@
-import {BASE_URL} from '@/lib/constants.ts'
+import { BASE_URL } from '@/lib/constants.ts'
 
 type LoginRequest = {
   email: string
   password: string
+}
+
+type LogoutRequest = {
+  accessToken: string
+  refreshToken: string
 }
 
 type LoginResponse = {
@@ -29,6 +34,25 @@ const authHandler = {
     }
 
     return await response.json()
+  },
+
+  async logout(data: LogoutRequest): Promise<Response> {
+    const { accessToken, refreshToken } = data
+    const response = await fetch(`${BASE_URL}/auth/logout`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: '{"token": "' + refreshToken + '"}',
+    })
+
+    if (!response.ok) {
+      //TODO handle error properly
+      throw new Error('Logout failed')
+    }
+
+    return response
   },
 }
 
