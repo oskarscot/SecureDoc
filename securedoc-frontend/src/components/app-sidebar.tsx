@@ -1,134 +1,50 @@
-import * as React from "react"
+import * as React from 'react'
 import {
-  BookOpen,
-  Bot,
+  Activity,
+  Archive,
   Command,
-  Frame,
-  Map,
-  PieChart,
-  Settings2,
-  SquareTerminal,
-} from "lucide-react"
+  Files,
+  Settings,
+  Shield,
+  Trash2,
+  Users,
+} from 'lucide-react'
 
-import { NavMain } from "@/components/nav-main"
-import { NavUsers } from "@/components/nav-users.tsx"
-import { NavUser } from "@/components/nav-user"
+import { NavUser } from '@/components/nav-user'
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
+} from '@/components/ui/sidebar'
 
-const data = {
-  navMain: [
-    {
-      title: "Playground",
-      url: "#",
-      icon: SquareTerminal,
-      isActive: true,
-      items: [
-        {
-          title: "History",
-          url: "#",
-        },
-        {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Models",
-      url: "#",
-      icon: Bot,
-      items: [
-        {
-          title: "Genesis",
-          url: "#",
-        },
-        {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Documentation",
-      url: "#",
-      icon: BookOpen,
-      items: [
-        {
-          title: "Introduction",
-          url: "#",
-        },
-        {
-          title: "Get Started",
-          url: "#",
-        },
-        {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Settings",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
-      ],
-    },
-  ],
-  projects: [
-    {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Travel",
-      url: "#",
-      icon: Map,
-    },
-  ],
-}
+const navigation = [
+  {
+    title: 'File Management',
+    items: [
+      { name: 'All Files', icon: Files, id: 'files' },
+      { name: 'Shared with Me', icon: Users, id: 'shared' },
+      { name: 'Recent', icon: Activity, id: 'recent' },
+      { name: 'Archived', icon: Archive, id: 'archived' },
+      { name: 'Trash', icon: Trash2, id: 'trash' },
+    ],
+  },
+  {
+    title: 'Administration',
+    items: [
+      { name: 'User Management', icon: Users, id: 'users' },
+      { name: 'Activity Logs', icon: Activity, id: 'activity' },
+      { name: 'Security', icon: Shield, id: 'security' },
+      { name: 'Settings', icon: Settings, id: 'settings' },
+    ],
+  },
+]
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
@@ -151,8 +67,27 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavUsers projects={data.projects} />
+        {navigation.map((section) => (
+          <SidebarGroup key={section.title}>
+            <SidebarGroupLabel>{section.title}</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {section.items.map((item) => (
+                  <SidebarMenuItem key={item.id}>
+                    <SidebarMenuButton
+                      onClick={() => console.log(`Navigating to ${item.id}`)}
+                      isActive={false}
+                      className="w-full justify-start"
+                    >
+                      <item.icon className="h-4 w-4" />
+                      {item.name}
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        ))}
       </SidebarContent>
       <SidebarFooter>
         <NavUser />
