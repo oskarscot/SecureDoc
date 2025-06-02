@@ -105,6 +105,10 @@ public class JwtTokenService {
     return tokenRepository.findByUser(user);
   }
 
+  public Optional<RefreshToken> findByUserId(UUID userId) {
+    return tokenRepository.findByUserId(userId);
+  }
+
   public UUID getUserIdFromToken(final String token) {
     final Claims payload = Jwts.parser()
         .verifyWith(this.secretKey)

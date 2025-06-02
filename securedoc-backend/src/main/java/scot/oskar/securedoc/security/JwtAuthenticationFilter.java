@@ -15,6 +15,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.UUID;
+
+import scot.oskar.securedoc.data.model.RefreshToken;
 import scot.oskar.securedoc.service.impl.JwtTokenService;
 
 @Component
@@ -30,7 +32,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
   @Override
   protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain)
-      throws ServletException, IOException {
+          throws ServletException, IOException {
     String jwt = getTokenFromRequest(request);
 
     if (StringUtils.hasText(jwt)) {
@@ -39,14 +41,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       if (isValid) {
         UUID userId = tokenProvider.getUserIdFromToken(jwt);
 
+        RefreshToken refreshToken = tokenProvider.findByUserId(userId).orElse(null);
+        if (refreshToken != null && refreshToken.getToken().equals(jwt)) {
+          filterChain.doFilter(request, response);
+          return;
+        }
+
         UserDetails userDetails = userDetailsService.loadUserById(userId);
 
-        // Create authentication token with user details
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-            userDetails, null, userDetails.getAuthorities()); // authorities are null as we do not use them
+                userDetails, null, userDetails.getAuthorities());
 
         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
         SecurityContextHolder.getContext().setAuthentication(authentication);
       }
     }
