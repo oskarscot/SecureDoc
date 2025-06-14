@@ -1,10 +1,9 @@
-package scot.oskar.securedoc.controller;
+package scot.oskar.securedoc.controller.internal;
 
 import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,7 +14,6 @@ import scot.oskar.securedoc.data.dto.file.FileResponseDTO;
 import scot.oskar.securedoc.data.model.File;
 import scot.oskar.securedoc.data.model.User;
 import scot.oskar.securedoc.service.FileService;
-import software.amazon.awssdk.services.s3.endpoints.internal.Value;
 
 @RestController
 @RequestMapping("api/v1/files")

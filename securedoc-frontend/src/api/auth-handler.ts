@@ -1,21 +1,5 @@
 import { BASE_URL } from '@/lib/constants.ts'
-
-type LoginRequest = {
-  email: string
-  password: string
-}
-
-type LogoutRequest = {
-  accessToken: string
-  refreshToken: string
-}
-
-type LoginResponse = {
-  resource: {
-    accessToken: string
-    refreshToken: string
-  }
-}
+import type {LoginRequest, LoginResponse, LogoutRequest} from "../../types";
 
 const authHandler = {
   async login(loginRequest: LoginRequest): Promise<LoginResponse> {
@@ -27,11 +11,6 @@ const authHandler = {
       },
       body: JSON.stringify({ email, password }),
     })
-
-    if (!response.ok) {
-      //TODO handle error properly
-      throw new Error('Login failed')
-    }
 
     return await response.json()
   },

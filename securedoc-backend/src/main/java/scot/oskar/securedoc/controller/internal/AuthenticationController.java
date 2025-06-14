@@ -1,4 +1,4 @@
-package scot.oskar.securedoc.controller;
+package scot.oskar.securedoc.controller.internal;
 
 import jakarta.validation.Valid;
 import java.net.URI;

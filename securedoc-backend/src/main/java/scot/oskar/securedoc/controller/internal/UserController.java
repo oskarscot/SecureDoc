@@ -1,4 +1,4 @@
-package scot.oskar.securedoc.controller;
+package scot.oskar.securedoc.controller.internal;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

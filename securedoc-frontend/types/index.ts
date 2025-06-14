@@ -10,3 +10,20 @@ export type UserType = {
     createdAt: Date
     updatedAt: Date
 }
+
+export type LoginRequest = {
+    email: string
+    password: string
+}
+
+export type LogoutRequest = {
+    accessToken: string
+    refreshToken: string
+}
+
+export type LoginResponse = {
+    resource: {
+        accessToken: string
+        refreshToken: string
+    }
+}
