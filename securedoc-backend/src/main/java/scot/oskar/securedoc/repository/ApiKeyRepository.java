@@ -9,7 +9,7 @@ import scot.oskar.securedoc.data.model.User;
 public interface ApiKeyRepository extends JpaRepository<ApiKey, UUID> {
 
   Optional<ApiKey> findByKey(String apiKey);
-  Optional<ApiKey> findByUser(User user);
-  Optional<ApiKey> findByUserId(UUID uuid);
+  Optional<ApiKey> findByOwner(User user);
+  Optional<ApiKey> findByOwnerId(UUID uuid);
 
 }

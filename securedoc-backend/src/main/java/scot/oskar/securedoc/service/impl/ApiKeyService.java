@@ -17,7 +17,7 @@ public class ApiKeyService {
   }
 
   public ApiKey createApiKey(User user) {
-    final boolean keyExists = repository.findByUser(user).isPresent();
+    final boolean keyExists = repository.findByOwner(user).isPresent();
     if(keyExists) {
       throw new ResourceAlreadyExistsException("ApiKey", "user", user.getId());
     }
