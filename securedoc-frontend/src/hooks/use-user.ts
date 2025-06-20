@@ -8,12 +8,11 @@ export function useUser() {
   const [loading, setLoading] = React.useState<boolean>(true)
   const [cookies, setCookie] = useCookies(['user', 'auth'])
 
-  if(cookies.user) {
-      return { user: cookies.user, loading: false }
-  }
-
   React.useEffect(() => {
     const fetchUser = async () => {
+      if(cookies.user) {
+        return { user: cookies.user, loading: false }
+      }
       try {
         const response = await fetch(`${BASE_URL}/users/me`, {
             method: 'GET',
